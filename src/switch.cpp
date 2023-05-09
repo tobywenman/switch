@@ -4,12 +4,15 @@
 #include <fstream>
 
 #include "inc/switch.h"
+#include "inc/matplotlibcpp.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
 #include <cmath>
 #include <stack>
+
+namespace plt = matplotlibcpp;
 
 particle::particle(float size[2],float angleLim,float length){
     for(int i=0; i<2;i++){
@@ -26,6 +29,12 @@ particle::particle(float size[2],float angleLim,float length){
 
     grad[0] /= mag;
     grad[1] /= mag;
+
+    for (int i = 0; i < 2; i++){
+        this->ends[i][0] = centre[i]-grad[i];
+        this->ends[i][1] = centre[i]+grad[i];
+    }
+
 }
 
 sim::sim(int partNum,float angleLim, float partLength){
@@ -45,18 +54,16 @@ sim::sim(int partNum,float angleLim, float partLength){
 
 }
 
-void sim::printAll(std::string filename){
+void sim::printAll(){
 
-    std::ofstream file;
 
-    file.open(filename);
-
-    file << "switch\n";
 
     for (int i=0; i<partNum;i++){
-        file << this->particles[i].centre[0] << ',' << this->particles[i].centre[1] << ',' << (this->particles[i].angle*(180/M_PI)) << ',' << this->particles[i].length << ',' << this->particles[i].connected << ",\n";
+        std::vector<float> x (particles[i].ends[0],particles[i].ends[0]+2);
+        std::vector<float> y (particles[i].ends[1],particles[i].ends[1]+2);
+        
+        plt::plot(x,y);
     }
-    file.close();
 }
 
 float sim::dist(particle& part1,particle& part2){
@@ -79,8 +86,8 @@ bool sim::checkConduct(){
 int main(){
     sim newSim(30,45,1.5);
 
-    newSim.checkConduct();
+    newSim.printAll();
 
-    newSim.printAll("../src/test.csv");
+    plt::show();
     return 0;
 }

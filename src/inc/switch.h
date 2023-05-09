@@ -5,6 +5,7 @@ class particle {
     public:
         float centre[2];
         float grad[2];
+        float ends[2][2];
         float length;
         float angle;
         bool connected;
@@ -21,6 +22,6 @@ class sim {
     float conductDist;
     int partNum;
     sim(int size,float angleLim, float partLength);
-    void printAll(std::string filename);
+    void printAll();
     bool checkConduct();
 };
