@@ -1,27 +1,49 @@
 #include <vector>
+#include <array>
 
+struct point
+{
+    float x;
+    float y;
+
+    point(float x=0, float y=0);
+
+    point addOffset(float grad[2], float length);
+};
 
 class particle {
     public:
-        float centre[2];
+        point centre;
         float grad[2];
-        float ends[2][2];
+        point ends[2];
         float length;
         float angle;
         bool connected;
+
+        point distToPoint(point testPoint);
 
         particle(float size[2],float angleLim,float length);    
 };
 
 class sim {
-    std::vector<particle> particles;
+    
 
-    float dist(particle& part1,particle& part2);
+    
+    bool ccw(point A, point B, point C);
+    bool intersect(particle& part1, particle& part2);  
+
+
 
     public:
-    float conductDist;
-    int partNum;
-    sim(int size,float angleLim, float partLength);
-    void printAll();
-    bool checkConduct();
+        float dist(particle& part1,particle& part2, bool plot);
+        std::vector<particle> particles;
+        float conductDist;
+        int partNum;
+        sim(int size,float angleLim, float partLength);
+        void printAll();
+        bool checkConduct();
+             
+        
 };
+
+
